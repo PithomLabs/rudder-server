@@ -2033,6 +2033,14 @@ func (jd *HandleT) addNewDSLoop() {
 			jd.logger.Infof("[[ %s : addNewDSLoop ]]: NewDS", jd.tablePrefix)
 			jd.addNewDS(appendToDsList, dataSetT{})
 			jd.dsListLock.Unlock()
+
+			//Adding index on latestDS.
+			sqlStmt := fmt.Sprintf(`CREATE INDEX IF NOT EXISTS %[1]s_parameters_did ON %[1]s((parameters->>'destination_id'));`, latestDS.JobTable)
+			_, err := jd.dbHandle.Exec(sqlStmt)
+			if err != nil {
+				pkgLogger.Errorf("failed to create index. Sql: %s", sqlStmt)
+				return
+			}
 		}
 	}
 }

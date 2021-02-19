@@ -541,7 +541,7 @@ func (brt *HandleT) initWorkers() {
 						}
 
 						//Intentionally emptying parameterFilters
-						parameterFilters = []jobsdb.ParameterFilterT{}
+						//parameterFilters = []jobsdb.ParameterFilterT{}
 
 						brtQueryStat := stats.NewStat("batch_router.jobsdb_query_time", stats.TimerType)
 						brtQueryStat.Start()
