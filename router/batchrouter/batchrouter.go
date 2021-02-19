@@ -539,6 +539,10 @@ func (brt *HandleT) initWorkers() {
 								Optional: false,
 							},
 						}
+
+						//Intentionally emptying parameterFilters
+						parameterFilters = []jobsdb.ParameterFilterT{}
+
 						brtQueryStat := stats.NewStat("batch_router.jobsdb_query_time", stats.TimerType)
 						brtQueryStat.Start()
 						brt.logger.Debugf("BRT: %s: DB about to read for parameter Filters: %v ", brt.destType, parameterFilters)
