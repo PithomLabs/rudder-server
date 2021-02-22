@@ -1199,6 +1199,13 @@ func (jd *HandleT) createDS(appendLast bool, newDSIdx string) dataSetT {
 	_, err = jd.dbHandle.Exec(sqlStatement)
 	jd.assertError(err)
 
+	//Adding index on the newDS.
+	sqlStmt := fmt.Sprintf(`CREATE INDEX IF NOT EXISTS %[1]s_parameters_did ON %[1]s USING gin (parameters);`, newDS.JobTable)
+	_, err = jd.dbHandle.Exec(sqlStmt)
+	if err != nil {
+		pkgLogger.Errorf("failed to create index. Sql: %s", sqlStmt)
+	}
+
 	if appendLast {
 		newDSWithSeqNumber := jd.setSequenceNumber(newDSIdx)
 		jd.JournalMarkDone(opID)
@@ -1208,13 +1215,6 @@ func (jd *HandleT) createDS(appendLast bool, newDSIdx string) dataSetT {
 	//This is the migration case. We don't yet update the in-memory list till
 	//we finish the migration
 	jd.JournalMarkDone(opID)
-
-	//Adding index on the newDS.
-	sqlStmt := fmt.Sprintf(`CREATE INDEX IF NOT EXISTS %[1]s_parameters_did ON %[1]s USING gin (parameters);`, newDS.JobTable)
-	_, err = jd.dbHandle.Exec(sqlStmt)
-	if err != nil {
-		pkgLogger.Errorf("failed to create index. Sql: %s", sqlStmt)
-	}
 	return newDS
 }
 
